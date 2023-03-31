@@ -37,7 +37,7 @@ class FileDB {
     private $where_columns;
     private $offset;
     private $amount;
-    private $data_is_ok;
+    private $data_check;
     private $data;
 
     public $errors;
@@ -52,6 +52,7 @@ class FileDB {
 
         $this->errors = Err::getInstance();
         $this->data = null;
+        $this->data_check = 'NOT_CHEKED';
 
         // Set file storage name
         $this->name = $db_name;
@@ -68,88 +69,96 @@ class FileDB {
     }
 
     public function prepareData(array $data){
-        $this->data_is_ok = true;
+        $this->data_check = 'OK';
         if (isset($data[0]) && !is_array($data[0])){
-            $this->data_is_ok = false;
+            $this->data_check = 'FAILED_ON_PREPARE';
             return $this;
         }
         $meta_structure = array_keys($this->meta->cols);
         foreach ( $meta_structure as $meta_key ) {
             foreach ( $data as $data_row){
                 if (!in_array($meta_key, array_keys($data_row))){
-                    $this->data_is_ok = false;
+                    $this->data_check = false;
                     return $this;
                 }
             }
         }
-        $this->data = $this->data_is_ok ? $data : false;
+        $this->data = $this->data_check ? $data : null;
         return $this;
     }
-    
-    public function insert(){
-        if ($this->data_is_ok){
-            $data = $this->data;
-        } else {
-            if ($this->data === null){
-                $this->errors::add('Data preparing failed, call method prepareData() before call method insert()');
+
+    public function insert()
+    {
+        try {
+
+            if ( $this->data_check === 'OK' ) {
+                $data = $this->data;
             } else {
-                $this->errors::add('Data preparing failed, check if data to insert is compatible with meta structure');
+                if ( $this->data_check === 'NOT_CHECKED' ) {
+                    throw new \Exception('Data preparing failed, call method prepareData() before call method insert()');
+                } else {
+                    throw new \Exception('Data preparing failed, check if data to insert is compatible with meta structure');
+                }
             }
+
+            $inserted = 0;
+            for ( $number = 0; isset($data[$number]); $number++ ) {
+
+                switch ( $this->addIndex($number + 1, $data[$number]) ) {
+                    case true:
+
+                        if ( $this->storage->put($data[$number]) ) {
+                            $inserted++;
+                        }
+                        break;
+
+                    case false:
+                        break;
+                }
+
+            }
+            $this->meta->rows += $inserted;
+            $this->meta->save();
+            return $inserted;
+        } catch ( \Exception $e ) {
+            $this->errors::add('Btree exception: something goes wrong on [' . __FUNCTION__ . ']: ' . $e->getMessage());
             return 0;
         }
-
-        $inserted = 0;
-
-        for( $number = 0; isset( $data[ $number ] ); $number++ ){
-
-            switch ( $this->addIndex( $number + 1, $data[ $number ] ) ){
-                case true:
-
-                    if( $this->storage->put( $data[ $number ] ) ){
-                        $inserted++;
-                    }
-                    break;
-                
-                case false:
-                    break;
-            }
-            
-        }
-        
-        $this->meta->rows += $inserted;
-        $this->meta->save();
-        
-        return $inserted;
     }
     
     public function delete() {
-        // Clear indexes
-        if( $this->meta->indexes ){
-            
-            foreach( $this->meta->indexes as &$index ){
-                
-                // @todo make multiple indexes support
-                $column_to_index = $index['columns'][0];
-                
-                switch( $index['type'] ){
-                    case 'bintree':
-                        $this->indexes[ $column_to_index ]->clear_tree();
-                        break;
-                    case 'btree':
-                        $this->indexes[ $column_to_index ]->clear();
-                        break;
-                }
-                $index['status'] = false;
-            } unset( $index );
-            
+        try {
+            // Clear indexes
+            if( $this->meta->indexes ){
+
+                foreach( $this->meta->indexes as &$index ){
+
+                    // @todo make multiple indexes support
+                    $column_to_index = $index['columns'][0];
+
+                    switch( $index['type'] ){
+                        case 'bintree':
+                            $this->indexes[ $column_to_index ]->clear_tree();
+                            break;
+                        case 'btree':
+                            $this->indexes[ $column_to_index ]->clear();
+                            break;
+                    }
+                    $index['status'] = false;
+                } unset( $index );
+            }
+
+            // Reset rows amount
+            $this->meta->rows = 0;
+            $this->meta->save();
+
+            // Clear and delete a storage
+            $this->storage->delete();
+        } catch ( \Exception $e ) {
+            $this->errors::add('Btree exception: something goes wrong on [' . __FUNCTION__ . ']: ' . $e->getMessage());
+            return 0;
         }
-        
-        // Reset rows amount
-        $this->meta->rows = 0;
-        $this->meta->save();
-        
-        // Clear and delete a storage
-        $this->storage->delete();
+        return true;
     }
     
     /**

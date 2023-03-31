@@ -19,7 +19,9 @@ $db_results = $file_db
     ->setWhere( array( 'network' => array('2130706433'), ) )
     ->setLimit( 0, 20 )
     ->select( 'network', 'mask', 'status', 'is_personal' );
-error_log('CTDEBUG: [' . __FUNCTION__ . '] [$db_results]: ' . var_export($db_results,true));
-error_log('CTDEBUG: [' . __FUNCTION__ . '] []: ' . var_export($file_db->errors::get_all(),true));
-$file_db
-    ->delete();
+if (!$file_db->errors::check()){
+    error_log('CTDEBUG: [' . __FUNCTION__ . '] [$db_results]: ' . var_export($db_results,true));
+} else {
+    error_log('CTDEBUG: [' . __FUNCTION__ . '] []: ' . var_export($file_db->errors::get_all(),true));
+}
+//$file_db->delete();
