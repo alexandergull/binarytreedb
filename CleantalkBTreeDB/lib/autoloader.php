@@ -14,7 +14,7 @@ function ct_usp_autoloader( $class ){
 	// Register class auto loader
 	// Custom modules
     error_log('CTDEBUG: [' . __FUNCTION__ . '] [$class]: ' . var_export($class,true));
-	if( strpos( $class, 'Cleantalk\\BTreeDb' ) !== false ){
+	if( strpos( $class, 'BTreeDb' ) !== false ){
 	    error_log('CTDEBUG: [' . __FUNCTION__ . '] [CLASS FOUND ]: ' . var_export($class,true));
 		$class = str_replace( '\\', DIRECTORY_SEPARATOR, $class );
         error_log('CTDEBUG: [' . __FUNCTION__ . '] [REPLACED CLASS ]: ' . var_export($class,true));

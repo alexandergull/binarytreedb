@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Cleantalk\BTreeDb\File;
+namespace BTreeDb\File;
 
 
-use Cleantalk\BTreeDb\Common\Err;
+use BTreeDb\Common\Err;
 
 class Storage {
 

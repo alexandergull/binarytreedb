@@ -1,18 +1,18 @@
 <?php
 
 
-namespace Cleantalk\BTreeDb\File;
+namespace BTreeDb\File;
 
 
-use Cleantalk\BTreeDb\Common\Err;
-use Cleantalk\BTreeDb\Common\Storage;
+use BTreeDb\Common\Err;
+use BTreeDb\Common\Storage;
 
 class FileDB {
     
     const FS_PATH = CT_BTREEDB_ROOT . 'data' . DIRECTORY_SEPARATOR;
     
     /**
-     * @var \Cleantalk\BTreeDb\File\Storage
+     * @var \BTreeDb\File\Storage
      */
     private $storage;
     
@@ -22,7 +22,7 @@ class FileDB {
     private $name;
     
     /**
-     * @var \Cleantalk\BTreeDb\Common\Storage
+     * @var \BTreeDb\Common\Storage
      */
     private $meta;
     
@@ -37,6 +37,8 @@ class FileDB {
     private $where_columns;
     private $offset;
     private $amount;
+
+    public $errors;
     
     
     /**
@@ -45,14 +47,16 @@ class FileDB {
      * @param string $db_name Name of DB
      */
     public function __construct( $db_name ) {
-        
+
+        $this->errors = Err::getInstance();
+
         // Set file storage name
         $this->name = $db_name;
         $this->getMetaData(); // @todo handle error
 
         if( ! $this->meta->is_empty() ){
             
-            $this->storage = new \Cleantalk\BTreeDb\File\Storage( $db_name, $this->meta->cols );
+            $this->storage = new \BTreeDb\File\Storage( $db_name, $this->meta->cols );
             // Set indexes only if we have information about them
             if( $this->meta->indexes ){
                 $this->getIndexes();
@@ -61,7 +65,7 @@ class FileDB {
     }
     
     public function insert( $data ){
-        
+
         $inserted = 0;
         
         for( $number = 0; isset( $data[ $number ] ); $number++ ){
@@ -87,7 +91,6 @@ class FileDB {
     }
     
     public function delete() {
-        
         // Clear indexes
         if( $this->meta->indexes ){
             
@@ -132,7 +135,7 @@ class FileDB {
         // Check columns for existence
         $result = $this->checkColumn( $cols );
         if ( $result !== true ) {
-            Err::add( 'Unknown column: ' . $result );
+            $this->errors::add( 'Unknown column: ' . $result );
         }else{
             $this->columns = $cols;
         }
@@ -154,7 +157,7 @@ class FileDB {
         
         $result = $this->checkColumn( array_keys( $where ) );
         if ( $result !== true ) {
-            Err::add( 'Unknown column in where: ' . $result );
+            $this->errors::add( 'Unknown column in where: ' . $result );
         }else{
             $this->where = $where;
             $this->where_columns = array_keys( $where );
@@ -175,12 +178,12 @@ class FileDB {
     public function setLimit( $offset, $amount ){
         
         if ( ! is_int( $offset ) && $offset >= 0 ) {
-            Err::add( 'Offset value is wrong: ' . $offset );
+            $this->errors::add( 'Offset value is wrong: ' . $offset );
             $this->offset = $offset;
         }
         
         if ( ! is_int( $amount ) && $amount > 0 ) {
-            Err::add( 'Amount value is wrong: ' . $amount );
+            $this->errors::add( 'Amount value is wrong: ' . $amount );
             $this->amount = $amount;
         }
         
@@ -374,9 +377,8 @@ class FileDB {
     }
     
     private function addIndex( $number, $data ) {
-
         foreach ( $this->meta->indexes as $key => &$index ){
-	
+
 	        // @todo this is a crunch
             error_log('CTDEBUG: [' . __FUNCTION__ . '] [$data]: ' . var_export($data,true));
             error_log('CTDEBUG: [' . __FUNCTION__ . '] [$this->meta->indexes]: ' . var_export($this->meta->indexes,true));
@@ -403,10 +405,10 @@ class FileDB {
 	            $index['status'] = 'ready';
                 $out = true;
             }elseif( $result === true ){
-//                Err::add('Insertion', 'Duplicate key for column "' . $index . '": ' . $data[ array_search( $index, $columns_name ) ] );
+                $this->errors::add('Insertion', 'Duplicate key for column "' . $index . '": ' . $data[ array_search( $index, $columns_name ) ] );
                 $out = false;
             }elseif( $result === false ){
-//                Err::add('Insertion', 'No index added for column "' . $index . '": ' . array_search( $index, $columns_name ) );
+                $this->errors::add('Insertion', 'No index added for column "' . $index . '": ' . array_search( $index, $columns_name ) );
                 $out = false;
             }else{
                 $out = false;
@@ -416,4 +418,5 @@ class FileDB {
             
         } unset( $index );
     }
+
 }

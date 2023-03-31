@@ -1,6 +1,6 @@
 <?php
 
-namespace Cleantalk\BTreeDb\File;
+namespace BTreeDb\File;
 
 class BTreeLeafNode
 {

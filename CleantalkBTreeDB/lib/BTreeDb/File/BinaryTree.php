@@ -1,9 +1,9 @@
 <?php
 
-namespace Cleantalk\BTreeDb\File;
+namespace BTreeDb\File;
 
-use Cleantalk\BTreeDb\Common\Err;
-use Cleantalk\BTreeDb\Common\Storage;
+use BTreeDb\Common\Err;
+use BTreeDb\Common\Storage;
 
 class BinaryTree {
 

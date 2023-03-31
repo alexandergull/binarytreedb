@@ -1,8 +1,8 @@
 <?php
 
-namespace Cleantalk\BTreeDb\File;
+namespace BTreeDb\File;
 
-use Cleantalk\BTreeDb\Templates\FluidInterface;
+use BTreeDb\Templates\FluidInterface;
 
 class BinaryTree_node {
 

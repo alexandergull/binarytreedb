@@ -21,7 +21,6 @@ define( 'CT_BTREEDB_DATA', CT_BTREEDB_ROOT . 'data' . DS );
 require_once 'lib' . DS . 'autoloader.php';
 
 // Create empty error object
-\Cleantalk\BTreeDb\Common\Err::getInstance();
 
 
 

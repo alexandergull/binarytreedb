@@ -1,8 +1,8 @@
 <?php
 
-namespace Cleantalk\BTreeDb\Common;
+namespace BTreeDb\Common;
 
-use Cleantalk\BTreeDb\Variables\Server;
+use BTreeDb\Variables\Server;
 
 /**
  * CleanTalk Helper class.
@@ -18,7 +18,7 @@ use Cleantalk\BTreeDb\Variables\Server;
  */
 class Helper{
 	
-	use \Cleantalk\BTreeDb\Templates\Singleton;
+	use \BTreeDb\Templates\Singleton;
 
 	static $instance;
 
