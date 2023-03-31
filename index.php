@@ -14,13 +14,7 @@ $data = array(
     'status'      => 2,
     'is_personal' => 0,
 );
-$file_db->insert(array($data));
-$db_results = $file_db
-    ->setWhere( array( 'network' => array('2130706433'), ) )
-    ->setLimit( 0, 20 )
-    ->select( 'network', 'mask', 'status', 'is_personal' );
-error_log('CTDEBUG: [' . __FUNCTION__ . '] [$db_results]: ' . var_export($db_results,true));
-$file_db->insert(array($data));
+$file_db->prepareData(array($data))->insert();
 $db_results = $file_db
     ->setWhere( array( 'network' => array('2130706433'), ) )
     ->setLimit( 0, 20 )

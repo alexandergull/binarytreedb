@@ -37,6 +37,8 @@ class FileDB {
     private $where_columns;
     private $offset;
     private $amount;
+    private $data_is_ok;
+    private $data;
 
     public $errors;
     
@@ -49,6 +51,7 @@ class FileDB {
     public function __construct( $db_name ) {
 
         $this->errors = Err::getInstance();
+        $this->data = null;
 
         // Set file storage name
         $this->name = $db_name;
@@ -63,11 +66,40 @@ class FileDB {
             }
         }
     }
+
+    public function prepareData(array $data){
+        $this->data_is_ok = true;
+        if (isset($data[0]) && !is_array($data[0])){
+            $this->data_is_ok = false;
+            return $this;
+        }
+        $meta_structure = array_keys($this->meta->cols);
+        foreach ( $meta_structure as $meta_key ) {
+            foreach ( $data as $data_row){
+                if (!in_array($meta_key, array_keys($data_row))){
+                    $this->data_is_ok = false;
+                    return $this;
+                }
+            }
+        }
+        $this->data = $this->data_is_ok ? $data : false;
+        return $this;
+    }
     
-    public function insert( $data ){
+    public function insert(){
+        if ($this->data_is_ok){
+            $data = $this->data;
+        } else {
+            if ($this->data === null){
+                $this->errors::add('Data preparing failed, call method prepareData() before call method insert()');
+            } else {
+                $this->errors::add('Data preparing failed, check if data to insert is compatible with meta structure');
+            }
+            return 0;
+        }
 
         $inserted = 0;
-        
+
         for( $number = 0; isset( $data[ $number ] ); $number++ ){
 
             switch ( $this->addIndex( $number + 1, $data[ $number ] ) ){
@@ -267,8 +299,6 @@ class FileDB {
         $addresses = array();
         
         foreach ( $this->where as $column => $values ){
-            error_log('CTDEBUG: [' . __FUNCTION__ . '] [$column]: ' . var_export($column,true));
-            error_log('CTDEBUG: [' . __FUNCTION__ . '] [$values]: ' . var_export($values,true));
             switch ( $this->index_type ){
                 case 'binarytree':
                     foreach ( $values as $value ){
@@ -339,8 +369,6 @@ class FileDB {
 
         $this->meta = new Storage( $this->name . '_meta', null );
 
-        error_log('CTDEBUG: [' . __FUNCTION__ . '] [$this->meta]: ' . var_export($this->meta,true));
-
         if( ! $this->meta->is_empty() ){
             $this->meta->line_length = array_sum( array_column( $this->meta->cols, 'length' ) );
             $this->meta->cols_num    = count( $this->meta->cols );
@@ -380,14 +408,9 @@ class FileDB {
         foreach ( $this->meta->indexes as $key => &$index ){
 
 	        // @todo this is a crunch
-            error_log('CTDEBUG: [' . __FUNCTION__ . '] [$data]: ' . var_export($data,true));
-            error_log('CTDEBUG: [' . __FUNCTION__ . '] [$this->meta->indexes]: ' . var_export($this->meta->indexes,true));
             $column_to_index = $index['columns'][0];
-            error_log('CTDEBUG: [' . __FUNCTION__ . '] [$column_to_index]: ' . var_export($column_to_index,true));
 
             $value_to_index = $data[ $column_to_index ];
-            error_log('CTDEBUG: [' . __FUNCTION__ . '] [$column_to_index]: ' . var_export($value_to_index,true));
-
 
             switch ( $index['type'] ){
                 case 'bintree':
@@ -405,10 +428,10 @@ class FileDB {
 	            $index['status'] = 'ready';
                 $out = true;
             }elseif( $result === true ){
-                $this->errors::add('Insertion', 'Duplicate key for column "' . $index . '": ' . $data[ array_search( $index, $columns_name ) ] );
+                $this->errors::add('Insertion', 'Duplicate key for column "' . $index . '": ' . $data[ array_search( $index, $column_to_index ) ] );
                 $out = false;
             }elseif( $result === false ){
-                $this->errors::add('Insertion', 'No index added for column "' . $index . '": ' . array_search( $index, $columns_name ) );
+                $this->errors::add('Insertion', 'No index added for column "' . $index . '": ' . array_search( $index, $column_to_index ) );
                 $out = false;
             }else{
                 $out = false;
