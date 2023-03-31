@@ -1,8 +1,8 @@
 <?php
 
-namespace Cleantalk\USP\File;
+namespace Cleantalk\BTreeDb\File;
 
-use Cleantalk\USP\Common\Err;
+use Cleantalk\BTreeDb\Common\Err;
 
 class BTree {
 	

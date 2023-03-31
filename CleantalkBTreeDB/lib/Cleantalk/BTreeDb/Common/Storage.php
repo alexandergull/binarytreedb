@@ -1,6 +1,6 @@
 <?php
 
-namespace Cleantalk\USP\Common;
+namespace Cleantalk\BTreeDb\Common;
 
 /**
  * @method array_values()
@@ -12,7 +12,7 @@ class Storage extends \ArrayObject {
 	 * @var array
 	 */
 	public $storage_name;
-	public $directory = CT_B3DB_DATA;
+	public $directory = CT_BTREEDB_DATA;
 	private $type = 'php';
 	private $map;
 
@@ -27,7 +27,7 @@ class Storage extends \ArrayObject {
 	}
 
 	/**
-	 * Converts array to \Cleantalk\USP\Common\Storage type.
+	 * Converts array to \Cleantalk\BTreeDb\Common\Storage type.
 	 * Recursive.
 	 *
 	 * @param $data_name
@@ -41,11 +41,11 @@ class Storage extends \ArrayObject {
 				$item = $this->convertToStorage( $name, $item );
 			}
 		}
-		return new \Cleantalk\USP\Common\Storage( $data_name, $data );
+		return new \Cleantalk\BTreeDb\Common\Storage( $data_name, $data );
 	}
 
 	/**
-	 * Converts \Cleantalk\USP\Common\Storage to array type.
+	 * Converts \Cleantalk\BTreeDb\Common\Storage to array type.
 	 * Recursive.
 	 *
 	 * @param null $data
@@ -56,7 +56,7 @@ class Storage extends \ArrayObject {
 		$data = is_null( $data ) ? $this : $data;
 		$tmp = array();
 		foreach ( $data as $name => $item ) {
-			$tmp[ $name ] = $item instanceof \Cleantalk\USP\Common\Storage
+			$tmp[ $name ] = $item instanceof \Cleantalk\BTreeDb\Common\Storage
 				? $this->convertToArray( $item )
 				: $item;
 		}
@@ -111,7 +111,7 @@ class Storage extends \ArrayObject {
 			
 			case 'php':
 				file_put_contents( $filename , "<?php\n");
-				\Cleantalk\USP\Common\File::inject__variable(
+				\Cleantalk\BTreeDb\Common\File::inject__variable(
 					$filename,
 					$this->storage_name,
 					$this->convertToArray()

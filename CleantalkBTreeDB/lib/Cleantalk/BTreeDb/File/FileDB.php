@@ -1,18 +1,18 @@
 <?php
 
 
-namespace Cleantalk\USP\File;
+namespace Cleantalk\BTreeDb\File;
 
 
-use Cleantalk\USP\Common\Err;
-use Cleantalk\USP\Common\Storage;
+use Cleantalk\BTreeDb\Common\Err;
+use Cleantalk\BTreeDb\Common\Storage;
 
 class FileDB {
     
-    const FS_PATH = CT_B3DB_ROOT . 'data' . DIRECTORY_SEPARATOR;
+    const FS_PATH = CT_BTREEDB_ROOT . 'data' . DIRECTORY_SEPARATOR;
     
     /**
-     * @var \Cleantalk\USP\File\Storage
+     * @var \Cleantalk\BTreeDb\File\Storage
      */
     private $storage;
     
@@ -22,7 +22,7 @@ class FileDB {
     private $name;
     
     /**
-     * @var \Cleantalk\USP\Common\Storage
+     * @var \Cleantalk\BTreeDb\Common\Storage
      */
     private $meta;
     
@@ -52,7 +52,7 @@ class FileDB {
 
         if( ! $this->meta->is_empty() ){
             
-            $this->storage = new \Cleantalk\USP\File\Storage( $db_name, $this->meta->cols );
+            $this->storage = new \Cleantalk\BTreeDb\File\Storage( $db_name, $this->meta->cols );
             // Set indexes only if we have information about them
             if( $this->meta->indexes ){
                 $this->getIndexes();

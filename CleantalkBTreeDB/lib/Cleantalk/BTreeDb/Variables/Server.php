@@ -1,14 +1,14 @@
 <?php
 
-namespace Cleantalk\USP\Variables;
+namespace Cleantalk\BTreeDb\Variables;
 
 /**
  * Class Server
  * Wrapper to safely get $_SERVER variables
  *
- * @usage \Cleantalk\USP\Variables\Server::get( $name );
+ * @usage \Cleantalk\BTreeDb\Variables\Server::get( $name );
  *
- * @package Cleantalk\USP\Variables
+ * @package Cleantalk\BTreeDb\Variables
  */
 class Server extends SuperGlobalVariables{
 	

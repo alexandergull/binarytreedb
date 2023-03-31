@@ -1,8 +1,8 @@
 <?php
 
-namespace Cleantalk\USP\File;
+namespace Cleantalk\BTreeDb\File;
 
-use Cleantalk\USP\Templates\FluidInterface;
+use Cleantalk\BTreeDb\Templates\FluidInterface;
 
 class BinaryTree_node {
 

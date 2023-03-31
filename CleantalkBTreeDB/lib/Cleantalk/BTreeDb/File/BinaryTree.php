@@ -1,13 +1,13 @@
 <?php
 
-namespace Cleantalk\USP\File;
+namespace Cleantalk\BTreeDb\File;
 
-use Cleantalk\USP\Common\Err;
-use Cleantalk\USP\Common\Storage;
+use Cleantalk\BTreeDb\Common\Err;
+use Cleantalk\BTreeDb\Common\Storage;
 
 class BinaryTree {
 
-	const BT_PATH = CT_B3DB_ROOT . 'data' . DIRECTORY_SEPARATOR;
+	const BT_PATH = CT_BTREEDB_ROOT . 'data' . DIRECTORY_SEPARATOR;
 
 	// File
 	private $file_path;

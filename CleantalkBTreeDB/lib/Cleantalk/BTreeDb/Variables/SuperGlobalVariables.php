@@ -1,20 +1,20 @@
 <?php
 
-namespace Cleantalk\USP\Variables;
+namespace Cleantalk\BTreeDb\Variables;
 
 /**
  * Class ServerVariables
  * Safety handler for ${_SOMETHING}
  *
- * @depends \Cleantalk\USP\Common\Singleton
+ * @depends \Cleantalk\BTreeDb\Common\Singleton
  *
- * @usage \Cleantalk\USP\Variables\{SOMETHING}::get( $name );
+ * @usage \Cleantalk\BTreeDb\Variables\{SOMETHING}::get( $name );
  *
- * @package Cleantalk\USP\Variables
+ * @package Cleantalk\BTreeDb\Variables
  */
 class SuperGlobalVariables{
 	
-	use \Cleantalk\USP\Templates\Singleton;
+	use \Cleantalk\BTreeDb\Templates\Singleton;
 	
 	static $instance;
 	

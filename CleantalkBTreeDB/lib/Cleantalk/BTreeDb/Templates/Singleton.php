@@ -1,6 +1,6 @@
 <?php
 
-namespace Cleantalk\USP\Templates;
+namespace Cleantalk\BTreeDb\Templates;
 
 trait Singleton{
 

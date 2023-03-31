@@ -6,7 +6,7 @@
 
 require_once 'CleantalkBTreeDB' . DIRECTORY_SEPARATOR .  'init.php';
 
-$file_db = new \Cleantalk\USP\File\FileDB('test_db');
+$file_db = new \Cleantalk\BTreeDb\File\FileDB('test_db');
 $data = array(
     'network'         => sprintf('%u', ip2long('127.0.0.1')),
     'mask'        => sprintf( '%u', bindec( str_pad( str_repeat( '1', 32 ), 32, 0, STR_PAD_RIGHT ) ) ),

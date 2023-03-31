@@ -1,6 +1,6 @@
 <?php
 
-namespace Cleantalk\USP\Common;
+namespace Cleantalk\BTreeDb\Common;
 
 /**
  * Class Err
