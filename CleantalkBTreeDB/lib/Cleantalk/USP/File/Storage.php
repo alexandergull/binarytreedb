@@ -32,7 +32,7 @@ class Storage {
     
     public function __construct( $name, $cols, $folder = null ){
     
-        $this->folder      = $folder ?: CT_USP_ROOT . 'data' . DIRECTORY_SEPARATOR;
+        $this->folder      = $folder ?: CT_B3DB_ROOT . 'data' . DIRECTORY_SEPARATOR;
         $this->name        = $name;
         $this->path        = $this->folder . $name . '.storage';
         $this->cols        = $cols;

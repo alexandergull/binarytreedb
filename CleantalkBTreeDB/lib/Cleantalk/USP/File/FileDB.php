@@ -9,7 +9,7 @@ use Cleantalk\USP\Common\Storage;
 
 class FileDB {
     
-    const FS_PATH = CT_USP_ROOT . 'data' . DIRECTORY_SEPARATOR;
+    const FS_PATH = CT_B3DB_ROOT . 'data' . DIRECTORY_SEPARATOR;
     
     /**
      * @var \Cleantalk\USP\File\Storage
@@ -335,6 +335,8 @@ class FileDB {
     private function getMetaData(){
 
         $this->meta = new Storage( $this->name . '_meta', null );
+
+        error_log('CTDEBUG: [' . __FUNCTION__ . '] [$this->meta]: ' . var_export($this->meta,true));
 
         if( ! $this->meta->is_empty() ){
             $this->meta->line_length = array_sum( array_column( $this->meta->cols, 'length' ) );

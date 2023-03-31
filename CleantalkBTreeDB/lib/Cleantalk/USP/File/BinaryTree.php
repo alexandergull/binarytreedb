@@ -7,7 +7,7 @@ use Cleantalk\USP\Common\Storage;
 
 class BinaryTree {
 
-	const BT_PATH = CT_USP_ROOT . 'data' . DIRECTORY_SEPARATOR;
+	const BT_PATH = CT_B3DB_ROOT . 'data' . DIRECTORY_SEPARATOR;
 
 	// File
 	private $file_path;

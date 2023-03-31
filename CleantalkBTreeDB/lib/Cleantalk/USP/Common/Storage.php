@@ -12,7 +12,7 @@ class Storage extends \ArrayObject {
 	 * @var array
 	 */
 	public $storage_name;
-	public $directory = CT_USP_DATA;
+	public $directory = CT_B3DB_DATA;
 	private $type = 'php';
 	private $map;
 

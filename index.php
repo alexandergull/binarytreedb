@@ -4,7 +4,7 @@
  */
 
 
-require_once 'inc' . DIRECTORY_SEPARATOR . 'common.php';
+require_once 'CleantalkBTreeDB' . DIRECTORY_SEPARATOR .  'init.php';
 
 $file_db = new \Cleantalk\USP\File\FileDB('test_db');
 $data = array(
