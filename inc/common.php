@@ -31,7 +31,6 @@ define( 'CT_USP_DATA', CT_USP_ROOT . 'data' . DS );
 define( 'CT_USP_DATA_SSL_CERT', CT_USP_DATA . 'ssl' . DS );
 
 require_once CT_USP_LIB . 'autoloader.php';
-require_once CT_USP_LIB . 'ct_phpFix.php';
 require_once CT_USP_INC . 'functions.php';
 
 // URI
@@ -39,31 +38,10 @@ define( 'CT_USP_URI',      'http://' . Server::get('HTTP_HOST') . preg_replace( 
 $result = parse_url( Server::get('REQUEST_URI') );
 define( 'CT_USP_AJAX_URI', isset( $result['path'] ) ? $result['path'] : '/uniforce/router.php' );
 
-// Load settings, data and remote calls data
-new \Cleantalk\USP\Common\State( 'settings', 'data', 'remote_calls', 'fw_stats' );
-
 // Create empty error object
 \Cleantalk\USP\Common\Err::getInstance();
 
 define( 'CT_USP_CRON_FILE', CT_USP_ROOT . 'data' . DS . 'cron.php' );
 
-if(
-    isset( State::getInstance()->plugin_meta->is_installed ) &&
-    State::getInstance()->plugin_meta->is_installed &&
-    empty( State::getInstance()->data->updated_to_350 )
-) {
-    \Cleantalk\USP\Updater\UpdaterScripts::update_to_3_5_0();
-    \Cleantalk\USP\Common\State::getInstance()->data->updated_to_350 = true;
-    \Cleantalk\USP\Common\State::getInstance()->data->save();
-}
 
-// Run scheduled tasks
-$cron = new \Cleantalk\USP\Uniforce\Cron();
-$cron->checkTasks();
-if( ! empty( $cron->tasks_to_run ) && ! RemoteCalls::check() )
-	require_once CT_USP_INC . 'cron_functions.php'; // File with cron wrappers
-	$cron->runTasks();
-unset( $cron );
 
-// Accept remote calls
-RemoteCalls::check() && RemoteCalls::perform();

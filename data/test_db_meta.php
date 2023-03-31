@@ -33,10 +33,10 @@ $test_db_meta = array (
       array (
         0 => 'network',
       ),
-      'status' => 'ready',
+      'status' => false,
       'type' => 'btree',
     ),
   ),
   'cols_num' => 4,
-  'rows' => 5,
+  'rows' => 0,
 );
